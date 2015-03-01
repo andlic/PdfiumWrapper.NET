@@ -42,6 +42,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FPDFColor.cs" />
+    <Compile Include="PageInterval.cs" />
+    <Compile Include="PageSet.cs" />
     <Compile Include="PdfDocument.cs" />
     <Compile Include="PdfiumDLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
