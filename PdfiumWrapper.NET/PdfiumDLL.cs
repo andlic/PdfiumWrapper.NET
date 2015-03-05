@@ -47,7 +47,10 @@ namespace PdfiumWrapper.NET
         internal static extern int FPDF_GetPageSizeByIndex(IntPtr documentHandle, int pageIndex, out double width, out double height);
 
         [DllImport("pdfium.dll")]
-        internal static extern IntPtr FPDFBitmap_Create(int width, int height, int alpha);
+        internal static extern IntPtr FPDFBitmap_CreateEx(int width, int height, int format, byte[] firstScan, int stride);
+
+        [DllImport("pdfium.dll")]
+        internal static extern IntPtr FPDFBitmap_CreateEx(int width, int height, int format, IntPtr firstScan, int stride);
 
         [DllImport("pdfium.dll")]
         internal static extern IntPtr FPDFBitmap_Destroy(IntPtr bitmapHandle);
