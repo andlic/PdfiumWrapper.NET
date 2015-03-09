@@ -61,7 +61,13 @@ namespace PdfiumWrapper.NET
         [DllImport("pdfium.dll")]
         internal static extern void FPDF_RenderPageBitmap(IntPtr bitmapHandle, IntPtr page, int leftX, int topY, int width, int height, int rotate, int flags);     // TODO: custom type for flags
 
-        [DllImport("pdfium.dll")]
-        internal static extern IntPtr FPDFBitmap_GetBuffer(IntPtr bitmapHandle);
+        [DllImport("pdfium.dll", CallingConvention = CallingConvention.StdCall, EntryPoint="?FPDFPage_SetCropBox@@YGXPAXMMMM@Z")]
+        internal static extern void FPDFPage_SetCropBox(IntPtr page, float left, float bottom, float right, float top);
+
+        [DllImport("pdfium.dll", CallingConvention = CallingConvention.StdCall, EntryPoint = "?FPDFPage_GetCropBox@@YGHPAXPAM111@Z")]
+        internal static extern int FPDFPage_GetCropBox(IntPtr page, out float left, out float bottom, out float right, out float top);
+
+        [DllImport("pdfium.dll", CallingConvention = CallingConvention.StdCall)]
+        internal static extern int FPDF_SaveAsCopy(IntPtr documentHandle, ref CallbackStreamer cbStruct, int flags);
     }
 }

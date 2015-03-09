@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 
 
 namespace PdfiumWrapper.NET
@@ -59,6 +60,32 @@ namespace PdfiumWrapper.NET
             PdfiumDLL.FPDFBitmap_Destroy(bitmapHandle);
 
             return bitmap;
+        }
+
+        public PageRectangle GetPageCropBox(int index)
+        {
+            var rect = new PageRectangle();
+            IntPtr pageHandle = PdfiumDLL.FPDF_LoadPage(documentHandle, index);
+            PdfiumDLL.FPDFPage_GetCropBox(pageHandle, out rect.left, out rect.bottom, out rect.right, out rect.top);
+            PdfiumDLL.FPDF_ClosePage(pageHandle);
+
+            return rect;
+        }
+
+        public void SetPageCropBox(int index, float left, float right, float top, float bottom)
+        {
+            IntPtr pageHandle = PdfiumDLL.FPDF_LoadPage(documentHandle, index);
+            PdfiumDLL.FPDFPage_SetCropBox(pageHandle, left, bottom, right, top);
+            PdfiumDLL.FPDF_ClosePage(pageHandle);
+        }
+
+        public void SaveCopy(string path)       // TODO: must not match path of open document
+        {
+            using(var stream = new FileStream(path, FileMode.Create))
+            {
+                var callbackStreamer = new CallbackStreamer(stream);
+                PdfiumDLL.FPDF_SaveAsCopy(documentHandle, ref callbackStreamer, 0);
+            }
         }
 
         public void Dispose()

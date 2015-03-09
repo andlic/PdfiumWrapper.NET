@@ -16,24 +16,41 @@ namespace PdfiumWrapper.NET.TestSamples
             using (var pdfDoc = new PdfDocument(@"test.pdf"))
             {
                 int pageCount = pdfDoc.PageCount;
-                BitmapSource pageImage;
+
                 for (int i = 0; i < pageCount; ++i)
                 {
                     width = (int)(pdfDoc.PageSizes[i].Width * scale);
                     height = (int)(pdfDoc.PageSizes[i].Height * scale);
-                    pageImage = pdfDoc.GetPagePixels(i, width, height, 96, 96, false)
-                            .ToBitmapSource(width, height, 96, 96);
-                    SaveBitmapSource(pageImage, @"\images\page " + i.ToString() + ".png");
+                    pdfDoc.GetPagePixels(i, width, height, 96, 96, false)
+                            .ToBitmapSource(width, height, 96, 96)
+                            .Save(@"\images\page " + i.ToString() + ".png");
                 }
 
-                Bitmap pageBitmap;
                 for (int i = 0; i < pageCount; ++i)
                 {
                     width = (int)(pdfDoc.PageSizes[i].Width * scale);
                     height = (int)(pdfDoc.PageSizes[i].Height * scale);
-                    pageBitmap = pdfDoc.GetPageImage(i, width, height, 96, 96, false);
-                    pageBitmap.Save(@"\bitmaps\page " + i.ToString() + ".png");
+                    var bitmap = pdfDoc.GetPageImage(i, width, height, 96, 96, false);
+                    bitmap.Save(@"\bitmaps\page " + i.ToString() + ".png");
+                    bitmap.Dispose();
                 }
+
+                for (int i = 0; i < pdfDoc.PageCount; ++i)
+                {
+                    var cropBox = pdfDoc.GetPageCropBox(i);
+
+                    float cropDX = (cropBox.Right - cropBox.Left) / 10f;
+                    float cropDY = (cropBox.Bottom - cropBox.Top) / 10f;
+
+                    cropBox.Left += cropDX;
+                    cropBox.Right -= cropDX;
+                    cropBox.Top += cropDY;
+                    cropBox.Bottom -= cropDY;
+
+                    pdfDoc.SetPageCropBox(i, cropBox.Left, cropBox.Right, cropBox.Top, cropBox.Bottom);
+                }
+
+                pdfDoc.SaveCopy("test_cropped.pdf");
             }
 
             PdfiumDLL.Destroy();
@@ -57,7 +74,7 @@ namespace PdfiumWrapper.NET.TestSamples
             return result;
         }
 
-        public static void SaveBitmapSource(BitmapSource source, string path)
+        public static void Save(this BitmapSource source, string path)
         {
             BitmapFrame frame = BitmapFrame.Create(source);
             var encoder = new PngBitmapEncoder();

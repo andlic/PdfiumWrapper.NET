@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -41,9 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FPDFColor.cs" />
+    <Compile Include="PageRectangle.cs" />
     <Compile Include="PdfDocument.cs" />
     <Compile Include="PdfiumDLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="CallbackStreamer.cs" />
     <Compile Include="Size.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
